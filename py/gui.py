@@ -7,10 +7,10 @@ from agent import create_agent
 
 # Page configuration
 st.set_page_config(
-    page_title="Bible Study Bot",
-    page_icon="📖",
+    page_title="Bible Study Basis",
+    page_icon="✞",
     layout="wide")
-st.title("📖 Bible Study Bot")
+st.title("✞ Bible Study Basis")
 
 # Initialize chat history
 if "messages" not in st.session_state:
