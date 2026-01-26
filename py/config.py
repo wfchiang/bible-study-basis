@@ -27,12 +27,15 @@ embedding_length = len(embedding_model.embed_query("This is a test"))
 
 
 # Create the MCP client
-mcp_client = MultiServerMCPClient({
-    "service": {
-        "transport": config["mcp"]["transport"],
-        "url": os.environ["BSB_MCP_SERVER"],
-    }
-})
+if "BSB_MCP_SERVER" in os.environ:
+    mcp_client = MultiServerMCPClient({
+        "service": {
+            "transport": config["mcp"]["transport"],
+            "url": os.environ["BSB_MCP_SERVER"],
+        }
+    })
+else:
+    mcp_client = None
 
 
 # Create the HTTP clients

@@ -86,22 +86,17 @@ async def get_bible_verses(
         }
 
 
-@mcp_app.tool(
-        name="search_bible_chunks",
-        description="搜寻与查找相关的圣经经文或文本片段，以回答用户关于特定主题、经文或神学概念的问题。")
-async def search_bible_chunks(
+def _search_and_rank_chunks(
         query: str,
-        min_score: float = 3.0, top_k: int = 5) -> dict:
-    """
-    Search for Bible verses or text chunks relevant to the query.
-    Use this tool to find relevant scripture when the user asks about specific topics, verses, or theological concepts in the Bible.
-    """
+        category: str,
+        min_score: float,
+        top_k: int) -> list | dict:
     assert top_k > 0, "top_k must be greater than 0"
-    logger.info("Searching Bible chunks for query: %s", query)
+    logger.info("Searching %s chunks for query: %s", category, query)
 
     text_chunks = search_text_chunks(
         query,
-        filters={"category": "bible"},
+        filters={"category": category},
         top_k=top_k * 2,)
     logger.info("Found %s text chunks", len(text_chunks))
 
@@ -113,21 +108,56 @@ async def search_bible_chunks(
     assert "ranked" in ranked_docs, "Invalid ranked docs format"
 
     logger.info("Ranking text chunks")
-    ranked_bible_chunks = []
+    ranked_chunks = []
     for rd in ranked_docs.get("ranked", []):
         try:
             index = int(rd.get("index"))
             score = float(rd.get("score", 0.0))
             if 0 <= index < len(text_chunks) and score >= min_score:
-                ranked_bible_chunks.append(text_chunks[index])
+                ranked_chunks.append(text_chunks[index])
         except Exception as e:
             logger.error("Error in ranking docs: %s", e)
 
-    if len(ranked_bible_chunks) > top_k:
-        ranked_bible_chunks = ranked_bible_chunks[:top_k]
-    logger.info("Returning %s ranked Bible chunks", len(ranked_bible_chunks))
+    if len(ranked_chunks) > top_k:
+        ranked_chunks = ranked_chunks[:top_k]
+    logger.info("Returning %s ranked chunks", len(ranked_chunks))
+    return ranked_chunks
+
+
+@mcp_app.tool(
+        name="search_article_chunks",
+        description="搜寻与查找相关的文章片段，以回答用户关于特定主题的问题。")
+async def search_article_chunks(
+        query: str,
+        min_score: float = 3.0, top_k: int = 5) -> dict:
+    """
+    Search for article chunks relevant to the query.
+    Use this tool to find relevant articles when the user asks about specific topics.
+    """
+    result = _search_and_rank_chunks(
+        query=query, category="article", min_score=min_score, top_k=top_k)
+    if isinstance(result, dict) and "error" in result:
+        return result
     return {
-        "bible_chunks": ranked_bible_chunks}
+        "article_chunks": result}
+
+
+@mcp_app.tool(
+        name="search_bible_chunks",
+        description="搜寻与查找相关的圣经经文或文本片段，以回答用户关于特定主题、经文或神学概念的问题。")
+async def search_bible_chunks(
+        query: str,
+        min_score: float = 3.0, top_k: int = 5) -> dict:
+    """
+    Search for Bible verses or text chunks relevant to the query.
+    Use this tool to find relevant scripture when the user asks about specific topics, verses, or theological concepts in the Bible.
+    """
+    result = _search_and_rank_chunks(
+        query=query, category="bible", min_score=min_score, top_k=top_k)
+    if isinstance(result, dict) and "error" in result:
+        return result
+    return {
+        "bible_chunks": result}
 
 
 if __name__ == "__main__":

@@ -64,7 +64,8 @@ if __name__ == "__main__":
 
         result = await agent.ainvoke({
             "messages": [
-                {"role": "user", "content": "遵守神的命令會帶來真正的喜樂嗎?為什麼?"}
+                # {"role": "user", "content": "遵守神的命令會帶來真正的喜樂嗎?為什麼?"}
+                {"role": "user", "content": "請透過搜尋 'article' 來找到關於啟示綠主旨的解釋"}
             ]
         })
         print(type(result))

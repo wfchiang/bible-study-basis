@@ -4,11 +4,12 @@ import logging
 from pathlib import Path
 
 import click
+import yaml
 
 from config import config
 from data.definitions import Bible, TextChunk
 from data.loaders import load_bible_from_dir
-from data.splitters import split_bible_book
+from data.splitters import split_bible_book, split_markdown_article
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -49,6 +50,29 @@ def main(
                     assert isinstance(b_chunk, TextChunk)
                     b_chunk.metadata["data_build_id"] = get_data_build_id()
                     f.write(json.dumps(b_chunk.model_dump(), ensure_ascii=False) + "\n")
+        
+        # Load articles
+        article_base_dir = Path(__file__).parents[1] / "data" / "articles"
+        article_index_file = article_base_dir / "index.yaml"
+        if article_index_file.is_file():
+            with article_index_file.open("r", encoding="utf-8") as idx_f:
+                article_index = yaml.safe_load(idx_f)
+            for article_metadata in article_index.get("articles", []):
+                if not isinstance(article_metadata, dict) or "file" not in article_metadata:
+                    continue
+                article_file = article_base_dir / article_metadata["file"]
+                if not article_file.is_file():
+                    logger.warning("Article file %s not found, skipping.", article_file)
+                    continue
+
+                logger.info("Processing article file %s", article_file)
+                article_chunks = split_markdown_article(
+                    text=article_file.read_text(encoding="utf-8"),
+                    metadata=article_metadata)
+                for art_chunk in article_chunks:
+                    assert isinstance(art_chunk, TextChunk)
+                    art_chunk.metadata["data_build_id"] = get_data_build_id()
+                    f.write(json.dumps(art_chunk.model_dump(), ensure_ascii=False) + "\n")
 
 
 if __name__ == "__main__":
