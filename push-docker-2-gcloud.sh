@@ -8,7 +8,7 @@ fi
 
 REGION="us-east4"
 PROJECT_ID="weifan-484118"
-REPO_NAME="bible-study-bot"
+REPO_NAME="bible-study-basis"
 IMAGE_NAME="$1"
 TAG="latest"
 

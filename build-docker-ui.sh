@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build --target ui -t bible-study-bot-ui:latest .
+docker build --target ui -t bible-study-basis-ui:latest .
