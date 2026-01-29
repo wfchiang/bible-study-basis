@@ -44,3 +44,9 @@ To test the full containerized setup locally (simulating the production environm
 ```bash
 docker-compose up -d --build
 ```
+
+### 4. Build and Push Docker Images
+
+To build the docker images by using `build-docker-mcp.sh` and `build-docker-ui.sh`.
+
+To push the images to Google Artifact Registry, use `push-docker-2-gcloud.sh mcp` or `push-docker-2-gcloud.sh ui`.
