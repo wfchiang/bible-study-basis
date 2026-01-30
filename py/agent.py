@@ -47,11 +47,9 @@ async def create_agent() -> StateGraph:
     check_env_vars()
 
     workflow = StateGraph(AgentState)
-    workflow.add_node("planner", planner_agent.invoke)
     workflow.add_node("agent", generalist_agent.invoke)
 
-    workflow.add_edge(START, "planner")
-    workflow.add_edge("planner", "agent")
+    workflow.add_edge(START, "agent")
     workflow.add_edge("agent", END)
 
     return workflow.compile()
