@@ -1,35 +1,13 @@
 import os
 import json
 
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langgraph.graph import StateGraph, START, END
 
-from data.definitions import AgentState, PROFESSION_OF_FAITH
-from sub_agents.generalist import generalist_agent
-from sub_agents.planner import planner_agent
-
-
-# 1. Global variable for the system prompt. You can edit this!
-SYSTEM_PROMPT = """你是一位聖經學習助手，專注於幫助使用者理解和學習聖經內容。請根據使用者的問題，本著聖經的信息來回到以聖經為出發點的答案。
-你的信仰宣言如下：
-{profession_of_faith}
-""".format(
-    profession_of_faith=PROFESSION_OF_FAITH)
-
-
-services: dict[str, dict] = {
-    "question_answering": {
-        "description": "回答有關聖經內容的問題",
-        "agent": generalist_agent
-    },
-    "small_group_discussion": {
-        "description": "提供小組討論的指引和問題",
-        "agent": generalist_agent
-    },
-    "misc": {
-        "description": "其他相關 (或非相關) 的聖經學習服務",
-        "agent": generalist_agent
-    },
-}
+from data.definitions import AgentState
+from sub_agents.generalist import GeneralistAgent
+from sub_agents.planner import PlannerAgent
+from sub_agents.qa import QAAgent
 
 
 def check_env_vars() -> None:
@@ -46,14 +24,33 @@ def check_env_vars() -> None:
 async def create_agent() -> StateGraph:
     check_env_vars()
 
+    generalist_agent = await GeneralistAgent().create_graph()
+    # planner_agent = PlannerAgent()
+    # qa_agent = await QAAgent().create_graph()
+
     workflow = StateGraph(AgentState)
-    workflow.add_node("agent", generalist_agent.invoke)
+    workflow.add_node("agent", generalist_agent.ainvoke)
+    workflow.add_node("postproc", postproc)
+    # workflow.add_node("qa", qa_agent.invoke)
 
     workflow.add_edge(START, "agent")
-    workflow.add_edge("agent", END)
+    # workflow.add_edge(START, "qa")
+    workflow.add_edge("agent", "postproc")
+    workflow.add_edge("postproc", END)
+    # workflow.add_edge("qa", END)
 
     return workflow.compile()
 
+
+async def postproc(state: AgentState) -> dict:
+    """
+    Post-process the messages to extract the final answer.
+    """
+    for i, m in enumerate(state["messages"]):
+        if (isinstance(m, AIMessage) or isinstance(m, HumanMessage)
+                or isinstance(m, SystemMessage) or isinstance(m, ToolMessage)):
+            state["messages"][i] = m.model_dump()
+    return {}
 
 if __name__ == "__main__":
     import asyncio

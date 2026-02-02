@@ -219,35 +219,7 @@ class AgentState(TypedDict):
     plan: Annotated[dict[str, dict], _merge_dict]
 
 
-class BSBAgent:
-    targeted_services: list[str] | None = None
-
-    def __init__ (self, *args, **kwargs):
-        self.graph = asyncio.run(self._create_graph())
-    
+class BSBAgent:    
     @abstractmethod
-    async def _create_graph(self) -> StateGraph:
+    async def create_graph(self) -> StateGraph:
         pass
-    
-    @abstractmethod
-    async def invoke(
-            self, state: AgentState) -> dict:
-        pass
-
-    def _find_task(self, state: AgentState) -> int | None:
-        """
-        Find the task in the plan DAG.
-        """
-        assert "plan" in state, "plan not in state"
-
-        if self.targeted_services is None:
-            return None
-        to_check = [state["plan"]["root"]]
-        while len(to_check) > 0:
-            node_id = to_check.pop(0)
-            if node := state["plan"]["nodes"].get(node_id):
-                if node["service"] in self.targeted_services:
-                    if "status" not in "service":
-                        return node_id
-                to_check = to_check + node.get("children", [])
-        return None
