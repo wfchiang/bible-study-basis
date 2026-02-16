@@ -215,7 +215,9 @@ class AgentRunStatus(str, Enum):
 
 
 class AgentState(TypedDict):
+    is_approved: Annotated[bool, lambda existing, new: new]
     messages: Annotated[list, _reduce_list]
+    n_pushbacks: Annotated[int, lambda existing, new: new]
     plan: Annotated[dict[str, dict], _merge_dict]
 
 

@@ -1,13 +1,19 @@
 import os
 import json
+import logging
 
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langgraph.graph import StateGraph, START, END
 
 from data.definitions import AgentState
 from sub_agents.generalist import GeneralistAgent
-from sub_agents.planner import PlannerAgent
-from sub_agents.qa import QAAgent
+from sub_agents.reviewer import ReviewerAgent
+
+
+logging.basicConfig(level=logging.INFO)
+logging.getLogger("httpx").setLevel(logging.WARNING)
+logging.getLogger("mcp").setLevel(logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 def check_env_vars() -> None:
@@ -25,19 +31,26 @@ async def create_agent() -> StateGraph:
     check_env_vars()
 
     generalist_agent = await GeneralistAgent().create_graph()
-    # planner_agent = PlannerAgent()
-    # qa_agent = await QAAgent().create_graph()
+    reviewer_agent = await ReviewerAgent().create_graph()
+
+    def should_continue(state: AgentState):
+        if state.get("is_approved", False):
+            return "postproc"
+        if state.get("n_pushbacks", 0) >= 3:
+            logger.warning("The answer has been rejected 3 times. Stopping further attempts.")
+            return "postproc"
+        return "agent"
 
     workflow = StateGraph(AgentState)
     workflow.add_node("agent", generalist_agent.ainvoke)
+    workflow.add_node("reviewer", reviewer_agent.ainvoke)
     workflow.add_node("postproc", postproc)
-    # workflow.add_node("qa", qa_agent.invoke)
+    
 
     workflow.add_edge(START, "agent")
-    # workflow.add_edge(START, "qa")
-    workflow.add_edge("agent", "postproc")
+    workflow.add_edge("agent", "reviewer")
+    workflow.add_conditional_edges("reviewer", should_continue)
     workflow.add_edge("postproc", END)
-    # workflow.add_edge("qa", END)
 
     return workflow.compile()
 
@@ -58,9 +71,12 @@ if __name__ == "__main__":
         agent = await create_agent()
 
         result = await agent.ainvoke({
+            # "is_approved": False,
+            # "n_pushbacks": 0,
             "messages": [
                 # {"role": "user", "content": "遵守神的命令會帶來真正的喜樂嗎?為什麼?"}
-                {"role": "user", "content": "請透過搜尋 'article' 來找到關於啟示綠主旨的解釋"}
+                # {"role": "user", "content": "請透過搜尋 'article' 來找到關於啟示綠主旨的解釋"}
+                {"role": "user", "content": "明年總統大選誰會贏?"}
             ]
         })
         print(type(result))
