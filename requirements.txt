@@ -1,4 +1,6 @@
+docling
 fastmcp
+huggingface_hub[hf_xet]
 langchain
 langchain_mcp_adapters
 langchain_openai

@@ -1,6 +1,3 @@
-data:
-  bible_versions:
-    - data/bible_versions/cuvs
 embedding:
   openai_model: text-embedding-3-small
   openai_max_retries: 5

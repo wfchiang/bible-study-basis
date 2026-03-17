@@ -8,7 +8,7 @@ from tqdm import tqdm
 from data.definitions import TextChunk
 from db.vector_store import add_text_chunk, create_collection_if_not_exists
 
-DEFAULT_DATA_FILE = Path(__file__).parents[1] / "build" / "data.jsonl"
+DEFAULT_DATA_FILE = Path(__file__).parents[1] / "build" / "dataset.jsonl"
 
 logger = logging.getLogger(__name__)
 logging.getLogger("httpx").setLevel(logging.ERROR)

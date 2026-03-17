@@ -1,5 +1,5 @@
 
-from .definitions import BibleVerse, TextChunk
+from .definitions import Bible, BibleBook, BibleVerse, TextChunk
 
 
 def _to_bible_verses(
@@ -10,6 +10,27 @@ def _to_bible_verses(
         v if isinstance(v, BibleVerse) else BibleVerse(**v)
         for v in verses]
     return verses
+
+
+def create_markdown_from_TextChunk(tc: TextChunk) -> str:
+    if isinstance(tc, BibleVerse):
+        return tc.text
+    elif isinstance(tc, BibleBook):
+        chapters = ["### Chapter 1\n"]
+        for v in tc.verses:
+            ch = v.chapter
+            if ch > len(chapters):
+                chapters.append(f"### Chapter {ch}\n")
+            chapters[-1] = f"{chapters[-1]}\n{v.text}".strip()
+        md_text = f"## Book of {tc.book}\n\n" + "\n\n".join(chapters)
+        return md_text
+    elif isinstance(tc, Bible):
+        books = [
+            create_markdown_from_TextChunk(b) for b in tc.books]
+        md_text = f"# Bible version {tc.version}\n\n" + "\n\n".join(books)
+        return md_text
+    else:
+        return tc.text
 
 
 def encode_verse_range(
