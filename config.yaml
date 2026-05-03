@@ -1,18 +1,12 @@
+data:
+  bible_versions:
+    - cuvs
 embedding:
   openai_model: text-embedding-3-small
   openai_max_retries: 5
-  openai_batch_size: 500
 llm:
   provider: openai
   model: gpt-4o
-mcp:
-  transport: streamable-http
-  port: 8080
 vector_store: 
   provider: qdrant
-  client_args:
-    # url: http://localhost:6333
-    # url: http://host.docker.internal:6333
-    url: https://7790bb72-1f2b-4cef-972b-004a9096f90b.us-east4-0.gcp.cloud.qdrant.io:6333
-    token_var: QDRANT_API_KEY
   collection_name: bible-study-basis

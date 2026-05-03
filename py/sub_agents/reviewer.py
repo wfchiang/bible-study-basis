@@ -7,7 +7,7 @@ from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
 from pydantic import BaseModel, Field
 
-from config import create_llm_with_tools
+from llm import create_llm_with_tools
 from data.definitions import AgentState, PROFESSION_OF_FAITH, BSBAgent
 
 

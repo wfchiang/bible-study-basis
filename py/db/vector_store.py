@@ -12,8 +12,6 @@ from config import config, embedding_length, embedding_model
 logger = logging.getLogger("vector_store")
 
 vs_config = config["vector_store"]
-vs_url = vs_config['client_args']['url']
-vs_api_key = os.environ[vs_config['client_args']['token_var']]
 vs_collection_name = vs_config["collection_name"]
 
 storage_dir = Path(__file__).resolve().parents[2] / "vector_store_data"

@@ -6,7 +6,7 @@ from langchain_openai import ChatOpenAI
 from langgraph.graph import StateGraph, START, END
 from langgraph.prebuilt import ToolNode
 
-from config import create_llm_with_tools
+from llm import create_llm_with_tools
 from data.definitions import AgentState, PROFESSION_OF_FAITH, BSBAgent
 
 

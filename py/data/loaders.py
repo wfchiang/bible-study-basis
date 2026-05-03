@@ -32,7 +32,7 @@ def load_bible_from_dir (
     """
     Load a Bible, a list of bible books, from a directory
     """
-    assert isinstance(directory, Path) and directory.is_dir()
+    assert isinstance(directory, Path) and directory.is_dir(), f"{directory} is not a valid directory"
 
     with ThreadPoolExecutor() as executor:
         futures = [executor.submit(load_bible_book_from_file, book_path)

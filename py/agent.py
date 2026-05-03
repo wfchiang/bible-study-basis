@@ -74,9 +74,9 @@ if __name__ == "__main__":
             # "is_approved": False,
             # "n_pushbacks": 0,
             "messages": [
-                # {"role": "user", "content": "遵守神的命令會帶來真正的喜樂嗎?為什麼?"}
+                {"role": "user", "content": "遵守神的命令會帶來真正的喜樂嗎?為什麼?"}
                 # {"role": "user", "content": "請透過搜尋 'article' 來找到關於啟示綠主旨的解釋"}
-                {"role": "user", "content": "明年總統大選誰會贏?"}
+                # {"role": "user", "content": "明年總統大選誰會贏?"}
             ]
         })
         print(type(result))

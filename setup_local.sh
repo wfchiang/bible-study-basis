@@ -11,7 +11,3 @@ if [ -f "$ENV_FILE" ]; then
 else
   echo "Warning: .env file not found at ${ENV_FILE}"
 fi
-
-# Extra env variables for the local dev
-# export BSB_MCP_SERVER="http://localhost:8080/mcp"
-export BSB_MCP_SERVER="https://bsb-mcp-408042734994.us-east4.run.app/mcp"

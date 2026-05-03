@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-import fastmcp
+from langchain.tools import tool
 
 from config import config
 from data.definitions import BibleBook
@@ -14,8 +14,6 @@ from workflows import rank_docs
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Create MCP server
-mcp_app = fastmcp.FastMCP("Bible-study-bot MCP")
 
 data_bible_versions_dir = Path(__file__).parents[1] / "data" / "bible_versions"
 
@@ -27,9 +25,7 @@ for bible_version_code in config["data"]["bible_versions"]:
 assert len(bible_versions) > 0
 
 
-@mcp_app.tool(
-        name="get_bible_verses",
-        description="提取特定的圣经经文或经文范围。")
+@tool
 async def get_bible_verses(
         book: str,
         from_chapter: int,
@@ -37,6 +33,7 @@ async def get_bible_verses(
         to_chapter: int | None = None,
         to_verse: int | None = None,
         version: str | None = None) -> dict:
+    """提取特定的圣经经文或经文范围。"""
     try:
         book = book.lower()
         to_chapter = to_chapter or from_chapter
@@ -126,15 +123,12 @@ def _search_and_rank_chunks(
     return ranked_chunks
 
 
-@mcp_app.tool(
-        name="search_article_chunks",
-        description="搜寻与查找相关的文章片段，以回答用户关于特定主题的问题。")
+@tool
 async def search_article_chunks(
         query: str,
         min_score: float = 3.0, top_k: int = 5) -> dict:
     """
-    Search for article chunks relevant to the query.
-    Use this tool to find relevant articles when the user asks about specific topics.
+    搜寻与查找相关的文章片段，以回答用户关于特定主题的问题。
     """
     result = _search_and_rank_chunks(
         query=query, category="article", min_score=min_score, top_k=top_k)
@@ -144,15 +138,12 @@ async def search_article_chunks(
         "article_chunks": result}
 
 
-@mcp_app.tool(
-        name="search_bible_chunks",
-        description="搜寻与查找相关的圣经经文或文本片段，以回答用户关于特定主题、经文或神学概念的问题。")
+@tool
 async def search_bible_chunks(
         query: str,
         min_score: float = 3.0, top_k: int = 5) -> dict:
     """
-    Search for Bible verses or text chunks relevant to the query.
-    Use this tool to find relevant scripture when the user asks about specific topics, verses, or theological concepts in the Bible.
+    搜寻与查找相关的圣经经文或文本片段，以回答用户关于特定主题、经文或神学概念的问题。
     """
     result = _search_and_rank_chunks(
         query=query, category="bible", min_score=min_score, top_k=top_k)
@@ -160,8 +151,3 @@ async def search_bible_chunks(
         return result
     return {
         "bible_chunks": result}
-
-
-if __name__ == "__main__":
-    # Run the MCP server using stdio transport
-    mcp_app.run(transport="stdio")
