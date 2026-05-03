@@ -1,6 +1,7 @@
 import logging
 import uuid
 import os
+from pathlib import Path
 
 from qdrant_client import QdrantClient, models, grpc
 
@@ -15,12 +16,11 @@ vs_url = vs_config['client_args']['url']
 vs_api_key = os.environ[vs_config['client_args']['token_var']]
 vs_collection_name = vs_config["collection_name"]
 
+storage_dir = Path(__file__).resolve().parents[2] / "vector_store_data"
+
 # --- Global instances (initialized once for efficiency) ---
 # Initialize the Qdrant client.
-qdrant_client = QdrantClient(
-    url=vs_url,
-    api_key=vs_api_key,
-    https=vs_url.startswith("https://"),)
+qdrant_client = QdrantClient(path=storage_dir)
 
 
 def create_collection_if_not_exists() -> None:
