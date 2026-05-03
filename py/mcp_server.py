@@ -17,10 +17,12 @@ logger = logging.getLogger(__name__)
 # Create MCP server
 mcp_app = fastmcp.FastMCP("Bible-study-bot MCP")
 
+data_bible_versions_dir = Path(__file__).parents[1] / "data" / "bible_versions"
+
 bible_versions = {}
-for bible_version_path in config["data"]["bible_versions"]:
+for bible_version_code in config["data"]["bible_versions"]:
     bible_version = load_bible_from_dir(
-        Path(bible_version_path))
+        data_bible_versions_dir / bible_version_code)
     bible_versions[bible_version.version] = bible_version
 assert len(bible_versions) > 0
 
@@ -161,7 +163,5 @@ async def search_bible_chunks(
 
 
 if __name__ == "__main__":
-    # Use streamable-http transport for production
-    mcp_app.run(
-        transport=config["mcp"]["transport"],
-        host="0.0.0.0", port=config["mcp"]["port"])
+    # Run the MCP server using stdio transport
+    mcp_app.run(transport="stdio")
