@@ -8,4 +8,4 @@ PORT=${PORT:-8080}
 
 # Run the Streamlit GUI
 # This command blocks, keeping the Docker container alive.
-streamlit run py/gui.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false
+python -m streamlit run py/gui.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false

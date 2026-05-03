@@ -20,12 +20,7 @@ You can run the services directly on your machine for rapid development. Ensure 
 
 *   **Load Environment Variables:**
     ```bash
-    source setup_local.sh
-    ```
-
-*   **Run the MCP Server:**
-    ```bash
-    ./start-mcp.sh
+    source setup_env.sh
     ```
 
 *   **Run the UI:**
@@ -47,6 +42,12 @@ docker-compose up -d --build
 
 ### 4. Build and Push Docker Images
 
-To build the docker images by using `build-docker-mcp.sh` and `build-docker-ui.sh`.
+To build the unified docker image:
+```bash
+docker build -t bible-study-basis .
+```
 
-To push the images to Google Artifact Registry, use `push-docker-2-gcloud.sh mcp` or `push-docker-2-gcloud.sh ui`.
+To push the image to Google Artifact Registry:
+```bash
+./push-docker-2-gcloud.sh
+```
