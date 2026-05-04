@@ -15,7 +15,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-data_bible_versions_dir = Path(__file__).parents[1] / "data" / "bible_versions"
+data_bible_versions_dir = Path(__file__).parents[2] / "data" / "bible_versions"
 
 bible_versions = {}
 for bible_version_code in config["data"]["bible_versions"]:

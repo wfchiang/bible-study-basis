@@ -1,0 +1,6 @@
+click
+tqdm
+docling
+docling-core
+tiktoken
+pyyaml

@@ -12,19 +12,11 @@ Before running the application locally, ensure you have the necessary API keys.
 1. Create a `.env` file in the root directory (refer to `.env.example` or the code for required keys like `OPENAI_API_KEY`).
 2. Install Python dependencies:
    ```bash
-   pip install -r requirements.txt
    pip install -e .
    ```
 
 ### 2. Local Development (Without Docker)
 You can run the services directly on your machine for rapid development. Ensure you load the environment variables first.
-
-*   **Load Environment Variables:**
-    (The `setup_env.sh` script is no longer needed for `PYTHONPATH`. Environment variables are loaded via `setup_local.sh`.)
-    ```bash
-    source setup_env.sh
-    source setup_local.sh
-    ```
 
 *   **Run the UI:**
     ```bash
@@ -33,7 +25,6 @@ You can run the services directly on your machine for rapid development. Ensure 
 
 *   **Test the Agent (CLI):**
     ```bash
-    python py/agent.py
     python -m bible_study_basis.agent
     ```
 

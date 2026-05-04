@@ -14,7 +14,6 @@ logger = logging.getLogger("vector_store")
 vs_config = config["vector_store"]
 vs_collection_name = vs_config["collection_name"]
 
-storage_dir = Path(__file__).resolve().parents[2] / "vector_store_data"
 storage_dir = Path(__file__).resolve().parents[3] / "vector_store_data" # Adjusted for src layout
 
 # --- Global instances (initialized once for efficiency) ---

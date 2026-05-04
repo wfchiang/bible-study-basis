@@ -9,7 +9,7 @@ import yaml
 
 # Load configuration
 config_file_path = os.environ.get(
-    "BSB_CONFIG_PATH", str(Path(__file__).parents[1] / "config.yaml"))
+    "BSB_CONFIG_PATH", str(Path(__file__).parents[2] / "config.yaml"))
 config = None
 with open(config_file_path, "r", encoding="utf-8") as f:
     config = yaml.safe_load(f)

@@ -5,6 +5,7 @@ dist/
 docker_volumes/
 
 .env
+*.egg-info/
 local_*.sh
 tmp.*
 
