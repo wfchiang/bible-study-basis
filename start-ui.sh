@@ -9,3 +9,5 @@ PORT=${PORT:-8080}
 # Run the Streamlit GUI
 # This command blocks, keeping the Docker container alive.
 python -m streamlit run py/gui.py --server.port=$PORT --server.address=0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false
+# Run the Streamlit GUI as a module from the installed package
+python -m streamlit run bible_study_basis.gui --server.port=$PORT --server.address=0.0.0.0 --server.headless=true --server.enableCORS=false --server.enableXsrfProtection=false
