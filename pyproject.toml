@@ -4,21 +4,22 @@ version = "0.1.0"
 description = "An AI-powered assistant designed to facilitate various Bible study tasks."
 readme = "README.md"
 requires-python = ">=3.9" # Assuming Python 3.9 or newer for modern features
-license = { text = "MIT" } # Placeholder, choose an appropriate license
+license = "MIT"
 keywords = ["bible", "ai", "study", "llm"]
 authors = [
   { name = "Wei-Fan Chiang", email = "weifan.wf@gmail.com" },
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
 dependencies = [
     "pyyaml",
-    "langchain-openai",
+    "langchain",
     "langchain-core",
+    "langchain-openai",
+    "langchain_tavily",
     "qdrant-client",
     "streamlit",
     "python-dotenv",

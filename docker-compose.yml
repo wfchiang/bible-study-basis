@@ -1,8 +1,7 @@
 services:
-  ui:
+  app:
     build:
       context: .
-      target: ui
     ports:
       - "8501:8080"
     env_file:

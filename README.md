@@ -18,9 +18,9 @@ Before running the application locally, ensure you have the necessary API keys.
 ### 2. Local Development (Without Docker)
 You can run the services directly on your machine for rapid development. Ensure you load the environment variables first.
 
-*   **Run the UI:**
+*   **Run the app:**
     ```bash
-    ./start-ui.sh
+    ./start.sh
     ```
 
 *   **Test the Agent (CLI):**

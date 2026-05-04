@@ -1,15 +1,9 @@
 #!/bin/bash
 
-if [[ "$1" != "ui" && "$1" != "mcp" ]]; then
-  echo "Error: Argument must be either 'ui' or 'mcp'"
-  echo "Usage: $0 <ui|mcp>"
-  exit 1
-fi
-
 REGION="us-east4"
 PROJECT_ID="weifan-484118"
 REPO_NAME="bible-study-basis"
-IMAGE_NAME="$1"
+IMAGE_NAME="app"
 TAG="latest"
 
 LOCAL_IMAGE_NAME="${REPO_NAME}-${IMAGE_NAME}"
