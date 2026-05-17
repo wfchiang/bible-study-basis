@@ -1,10 +1,13 @@
 import os
-import json
 import logging
+from pathlib import Path
 
 from deepagents import create_deep_agent
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_google_genai import ChatGoogleGenerativeAI
+
+from config import web_search_tool
+# from data_tools import get_bible_verses, search_article_chunks, search_bible_chunks
 
 
 logging.basicConfig(level=logging.INFO)
@@ -12,6 +15,7 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logging.getLogger("mcp").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
+skills_folder = str(Path(__file__).parent / "skills")
 
 def check_env_vars() -> None:
     """
@@ -28,13 +32,19 @@ async def create_agent():
     check_env_vars()
 
     llm = ChatGoogleGenerativeAI(
-        model="	gemini-3-flash-preview",
+        model="gemini-3-flash-preview",
         temperature=0,
     )
 
     agent = create_deep_agent(
         model=llm,
-        tools=[]  # Add your custom tools here
+        # tools=[
+        #     get_bible_verses,
+        #     search_article_chunks,
+        #     search_bible_chunks
+        # ]
+        tools=[web_search_tool] if web_search_tool else [],
+        skills=[skills_folder],
     )
 
     return agent
