@@ -3,7 +3,7 @@ name = "bible-study-basis"
 version = "0.1.0"
 description = "An AI-powered assistant designed to facilitate various Bible study tasks."
 readme = "README.md"
-requires-python = ">=3.9" # Assuming Python 3.9 or newer for modern features
+requires-python = ">=3.11"
 license = "MIT"
 keywords = ["bible", "ai", "study", "llm"]
 authors = [
@@ -18,8 +18,10 @@ dependencies = [
     "pyyaml",
     "langchain",
     "langchain-core",
+    "langchain-google-genai",
     "langchain-openai",
     "langchain_tavily",
+    "deepagents",
     "qdrant-client",
     "streamlit",
     "python-dotenv",
